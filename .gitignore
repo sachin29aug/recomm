@@ -21,3 +21,4 @@ dist
 /bin
 node_modules
 public/stylesheets/*.css.map
+.bsp
