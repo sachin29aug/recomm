@@ -1,6 +1,10 @@
 package controllers;
 
+import models.Book;
 import play.mvc.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -19,6 +23,7 @@ public class HomeController extends Controller {
     }
     
     public Result explore() {
+        List<Book> books = new ArrayList<>();
         return ok(views.html.explore.render());
     }
     

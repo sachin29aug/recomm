@@ -3,6 +3,10 @@ organization := "com.example"
 
 version := "1.0-SNAPSHOT"
 
+libraryDependencies ++= Seq(
+  "org.json" % "json" % "20210307",
+)
+
 lazy val root = (project in file(".")).enablePlugins(PlayJava)
   //.enablePlugins(PlayNettyServer).disablePlugins(PlayPekkoHttpServer) // uncomment to use the Netty backend
 
