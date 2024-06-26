@@ -3,8 +3,9 @@
 @import utils.GoogleBookClient
 
 @main("Hello World") {
+    @**
     @for(book <- GoogleBookClient.generateRandomBooks()) {
-        <table>
+       <table>
             <tr>
                 <td>@book.title</td>
                 <td>@book.genre</td>
@@ -15,5 +16,8 @@
                 <td><a href="@book.blinkistUrl" target="_blank">Blinkist</a></td>
             </tr>
         </table>
-    }
+    }**@
+
+    <br>
+    &nbsp;&nbsp; @Html(SystemAdmin.getRandomBookLink())
 }
