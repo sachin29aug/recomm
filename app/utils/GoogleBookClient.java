@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Random;
 
 public class GoogleBookClient {
-    private static final String API_KEY = "AIzaSyA9Q13ZuoDyitsEFkYnHaBRUDlfhBP9l2o";
+    private static final String API_KEY = System.getenv("API_KEY");
     private static final String BASE_URL = "https://www.googleapis.com/books/v1/volumes";
 
     private static final String[] CATEGORY_MIND_AND_SPIRIT = {"Psychology", "Philosophy", "Spirituality"};
