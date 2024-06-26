@@ -14,4 +14,8 @@ crossScalaVersions := Seq("2.13.14", "3.3.3")
 
 scalaVersion := crossScalaVersions.value.head
 
+libraryDependencies ++= Seq(
+  "org.jsoup" % "jsoup" % "1.13.1"
+)
+
 libraryDependencies += guice
