@@ -18,7 +18,7 @@ public class GoogleBookClient {
     private static final String BASE_URL = "https://www.googleapis.com/books/v1/volumes";
 
     private static final String[] CATEGORY_MIND_AND_SPIRIT = {"Psychology", "Philosophy", "Spirituality"};
-    private static final String[] CATEGORY_PERSONAL_GROWTH = {"Self-Help", "Health"};
+    private static final String[] CATEGORY_PERSONAL_GROWTH = {"Self-Help"/**, "Health"**/};
     private static final String[] CATEGORY_BUSINESS_LEADERSHIP = {"Business", "Leadership", "Economics"};
     private static final String[] CATEGORY_BIOGRAPHY_AND_MEMOIRS = {"Biography"};
     private static final String[] CATEGORY_CHILDREN_BOOKS = {"Children's"};
@@ -37,7 +37,7 @@ public class GoogleBookClient {
         Random random = new Random();
         String randomGenre = category[random.nextInt(category.length)];
         int totalBooks = getTotalBooksInGenre(randomGenre);
-        int randomIndex = new Random().nextInt(1000 /**totalBooks**/);
+        int randomIndex = new Random().nextInt(totalBooks);
         JSONObject jsonObject = fetchBookAtIndex(randomGenre, randomIndex);
         Book book = new Book();
         if (jsonObject != null) {
@@ -67,7 +67,7 @@ public class GoogleBookClient {
     private static int getTotalBooksInGenre(String genre) throws Exception {
         //String url = String.format("%s?q=subject:%s&printType=books&maxResults=1&key=%s", BASE_URL, genre, API_KEY);
         //String url = BASE_URL + "?q=subject:" + genre + "&key=" + API_KEY;
-        String url = BASE_URL + "?q=" + genre + "&langRestrict=en&printType=books&maxResults=1&key=" + API_KEY;
+        String url = BASE_URL + "?q=subject:" + genre + "&langRestrict=en&printType=books&maxResults=1&orderBy=relevance&key=" + API_KEY;
         JSONObject responseJson = getJsonResponse(url);
         int totalBooks = responseJson.optInt("totalItems", 0);
         System.out.println("Genre: " + genre + ", Total books: " + totalBooks);
@@ -75,11 +75,16 @@ public class GoogleBookClient {
     }
 
     private static JSONObject fetchBookAtIndex(String genre, int index) throws Exception {
-        String url = BASE_URL + "?q=" + genre + "&langRestrict=en&printType=books&maxResults=1&startIndex=" + index + "&key=" + API_KEY;
+        int MAX_RESULTS = 40;
+        String url = BASE_URL + "?q=subject:" + genre + "&langRestrict=en&printType=books&maxResults=" + MAX_RESULTS + "&startIndex=" + index + "&orderBy=relevance&key=" + API_KEY;
         //String url = String.format("%s?q=subject:%s&printType=books&startIndex=%d&maxResults=1&key=%s", BASE_URL, genre, index, API_KEY);
         JSONObject responseJson = getJsonResponse(url);
         JSONArray items = responseJson.optJSONArray("items");
-        return (items != null && items.length() > 0) ? items.getJSONObject(0) : null;
+        if(items != null && items.length() > 0) {
+            int randomIndex = new Random().nextInt(items.length());
+            return items.getJSONObject(randomIndex);
+        }
+        return null;
     }
 
     private static String getIsbn(JSONArray identifiers) {
