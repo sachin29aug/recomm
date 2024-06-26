@@ -37,13 +37,16 @@ public class GoogleBookClient {
         Random random = new Random();
         String randomGenre = category[random.nextInt(category.length)];
         int totalBooks = getTotalBooksInGenre(randomGenre);
-        int randomIndex = new Random().nextInt(totalBooks);
+        int randomIndex = new Random().nextInt(1000 /**totalBooks**/);
         JSONObject jsonObject = fetchBookAtIndex(randomGenre, randomIndex);
         Book book = new Book();
         if (jsonObject != null) {
             JSONObject volumeInfo = jsonObject.getJSONObject("volumeInfo");
             String isbn = getIsbn(volumeInfo.optJSONArray("industryIdentifiers"));
             book.title = volumeInfo.optString("title", "No title available");
+
+            System.out.println("Index: " + randomIndex + ", Title: " + book.title);
+
             book.genre = randomGenre;
             book.youtubeUrl = generateYouTubeUrl(book.title);
             if(isbn != null && isbn.trim().length() > 0 && !isbn.equals("No ISBN available")) {
@@ -62,13 +65,18 @@ public class GoogleBookClient {
     }
 
     private static int getTotalBooksInGenre(String genre) throws Exception {
-        String url = String.format("%s?q=subject:%s&printType=books&maxResults=1&key=%s", BASE_URL, genre, API_KEY);
+        //String url = String.format("%s?q=subject:%s&printType=books&maxResults=1&key=%s", BASE_URL, genre, API_KEY);
+        //String url = BASE_URL + "?q=subject:" + genre + "&key=" + API_KEY;
+        String url = BASE_URL + "?q=" + genre + "&langRestrict=en&printType=books&maxResults=1&key=" + API_KEY;
         JSONObject responseJson = getJsonResponse(url);
-        return responseJson.optInt("totalItems", 0);
+        int totalBooks = responseJson.optInt("totalItems", 0);
+        System.out.println("Genre: " + genre + ", Total books: " + totalBooks);
+        return totalBooks;
     }
 
     private static JSONObject fetchBookAtIndex(String genre, int index) throws Exception {
-        String url = String.format("%s?q=subject:%s&printType=books&startIndex=%d&maxResults=1&key=%s", BASE_URL, genre, index, API_KEY);
+        String url = BASE_URL + "?q=" + genre + "&langRestrict=en&printType=books&maxResults=1&startIndex=" + index + "&key=" + API_KEY;
+        //String url = String.format("%s?q=subject:%s&printType=books&startIndex=%d&maxResults=1&key=%s", BASE_URL, genre, index, API_KEY);
         JSONObject responseJson = getJsonResponse(url);
         JSONArray items = responseJson.optJSONArray("items");
         return (items != null && items.length() > 0) ? items.getJSONObject(0) : null;
