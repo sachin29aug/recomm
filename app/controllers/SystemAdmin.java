@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -18,29 +19,68 @@ public class SystemAdmin extends Controller {
     public Result importBooks() throws IOException {
         StringBuilder sb = new StringBuilder();
         int count = 0;
-        List<Book> books = importBooks1();
-        for(Book book: books) {
-            sb.append(++count + "\n");
-            sb.append(book.title + "\n");
-            sb.append(book.author  + "\n");
-            sb.append(book.avgRating  + "\n");
-            sb.append(book.ratingsCount  + "\n");
-            sb.append(book.publishDate  + "\n");
-            sb.append("<a href='https://www.goodreads.com/" + book.goodReadsLink  + "' target='_blank'>" + book.title + "</a>"  + "\n");
-            sb.append("========================"  + "\n\n");
+        List<String> filePaths = Arrays.asList(
+                "datasets/Personal Development/self-help.html",
+                "datasets/Personal Development/productivity.html",
+                "datasets/Personal Development/communication-skills.html",
+                "datasets/Personal Development/creativity.html",
+                "datasets/Personal Development/education.html",
+                "datasets/Personal Development/biography.html",
+                "datasets/Personal Development/philosophy.html",
+
+                "datasets/Mind & Spirit/psychology.html",
+                "datasets/Mind & Spirit/spirituality.html",
+                "datasets/Mind & Spirit/mindfulness.html",
+
+                "datasets/Business & Economics/business.html",
+                "datasets/Business & Economics/economics.html",
+                "datasets/Business & Economics/leadership.html",
+                "datasets/Business & Economics/entrepreneurship.html",
+                "datasets/Business & Economics/marketing.html",
+
+                "datasets/Family & Lifestyle/childrens.html",
+                "datasets/Family & Lifestyle/parenting.html",
+                "datasets/Family & Lifestyle/travel.html",
+
+                "datasets/Science & Environment/science.html",
+                "datasets/Science & Environment/environment.html",
+                "datasets/Science & Environment/gardening.html",
+
+                "datasets/Arts & Humanities/art.html",
+                "datasets/Arts & Humanities/design.html",
+                "datasets/Arts & Humanities/architecture.html",
+                "datasets/Arts & Humanities/folklore.html",
+                "datasets/Arts & Humanities/history.html",
+                "datasets/Arts & Humanities/politics.html",
+                "datasets/Arts & Humanities/law.html"
+        );
+
+        for(String filePath : filePaths) {
+            List<Book> books = importBooks1(filePath);
+            for(Book book: books) {
+                sb.append(++count + "\n");
+                sb.append(book.title + "\n");
+                sb.append(book.author  + "\n");
+                sb.append(book.avgRating  + "\n");
+                sb.append(book.ratingsCount  + "\n");
+                sb.append(book.publishDate  + "\n");
+                sb.append("<a href='https://www.goodreads.com/" + book.goodReadsLink  + "' target='_blank'>" + book.title + "</a>"  + "\n");
+                sb.append("========================"  + "\n\n");
+            }
         }
+
         return ok(sb.toString());
     }
 
     public static String getRandomBookLink() throws IOException {
-        List<Book> books = importBooks1();
+        List<Book> books = importBooks1("datasets/Personal Development/self-help.html");
         int randomIndex = new Random().nextInt(books.size());
         return books.get(randomIndex).goodReadsLink;
     }
 
-    public static List<Book> importBooks1() throws IOException {
+    public static List<Book> importBooks1(String filePath) throws IOException {
         String confDir = Paths.get("conf").toAbsolutePath().toString();
-        File inputFile = new File(confDir, "books_data/philosophy.html");
+        File inputFile = new File(confDir, filePath);
         Document doc = Jsoup.parse(inputFile, "UTF-8");
 
         List<Book> books = new ArrayList<>();
