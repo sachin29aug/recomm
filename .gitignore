@@ -22,3 +22,4 @@ dist
 node_modules
 public/stylesheets/*.css.map
 .bsp
+conf/datasets
